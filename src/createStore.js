@@ -29,7 +29,7 @@
   The store can register 'subscriptions' via the 'subscribe' method.
   The subscribe method takes a function that must be run every time
   the state is updated. 'subscribe' returns a function (unsubscribe)
-  which allows for a specific listener (subscription) to be removed.
+  which allows for a specific listener to be removed.
     const unsubscribe = store.subscribe(() => {
       console.log('State updated!');
     });
@@ -37,7 +37,40 @@
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 function createStore(reducer, preloadedState, enhancer) {
-  // CODE HERE!
+  let state = reducer(preloadedState, {type: 'INIT'});
+  let subscriptions = [];
+
+  return {
+    getState: function() {
+      return state;
+    },
+    dispatch: function(action) {
+      if (typeof action !== 'object') throw new TypeError();
+      if (!action.type) throw new Error();
+
+      const nextState = reducer(state, action);
+      if (state !== nextState) {
+        subscriptions.forEach(subscription => subscription());
+        state = nextState;
+      }
+
+      return action;
+    },
+    subscribe: function(listener) {
+      if (typeof listener !== 'function') throw new TypeError();
+      subscriptions.push(listener);
+
+      let subscribed = true;
+      return () => {
+        if (!subscribed) return;
+        subscriptions.splice(subscriptions.indexOf(listener), 1);
+        subscribed = false;
+      };
+    },
+    replaceReducer: function(nextReducer) {
+      if (typeof nextReducer !== 'function') throw new TypeError();
+    }
+  }
 }
 
 module.exports = createStore;
