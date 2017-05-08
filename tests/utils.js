@@ -14,17 +14,8 @@ function duckReducer(prevDucks=initialDucks, action) {
 
 function newDuckReducer(prevDucks=initialDucks, action) {
   switch(action.type) {
-    case 'ENHANCE_DUCK':
-      const duck = prevDucks.filter(duck => duck.name === action.name)[0];
-      if (!duck) throw new Error(`Duck ${action.name} does not exist!`);
-
-      const enhancedDuck = Object.assign({}, duck);
-      if (!enhancedDuck.enhancements) enhancedDuck.enhancements = [];
-      enhancedDuck.enhancements.push(action.enhancement);
-
-      const nextDucks = [...prevDucks];
-      nextDucks.splice(nextDucks.indexOf(duck), 1);
-      nextDucks.push(enhancedDuck);
+    case 'REMOVE_DUCK':
+      const nextDucks = prevDucks.filter(duck => duck.name !== action.name);
       return nextDucks;
     default:
       return prevDucks;

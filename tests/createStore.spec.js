@@ -128,6 +128,7 @@ describe('createStore', () => {
       });
 
       it('unsubcribe will not remove more listeners if called multiple times', () => {
+        // HINT: closure!!!
         const listenerA = sinon.spy();
 
         const unsubscribeA1 = duckStore.subscribe(listenerA);
@@ -143,28 +144,76 @@ describe('createStore', () => {
   });
 
   describe('replaceReducer', () => {
+
     it('expects a function (the next reducer)', () => {
       expect(duckStore.replaceReducer.bind(null, 'not a func')).to.throw(TypeError);
     });
 
     it('does not reset state when reducer is replaced', () => {
+      expect(duckStore.getState()).to.deep.equal(initialDucks);
+
       const actualAdviceMallard = {
         name: 'Actual Advice Mallard',
-        color: 'multi',
+        color: 'multi'
       };
-
-      expect(duckStore.getState()).to.deep.equal(initialDucks);
       duckStore.dispatch({
         type: 'ADD_DUCK',
-        duck: actualAdviceMallard,
+        duck: actualAdviceMallard
       });
-
       expect(duckStore.getState()).to.deep.equal([...initialDucks, actualAdviceMallard]);
-      const newDuckReducerSpy = sinon.spy(newDuckReducer);
+      
+      duckStore.replaceReducer(newDuckReducer);
+      expect(duckStore.getState()).to.deep.equal([...initialDucks, actualAdviceMallard]);
+      
+      duckStore.dispatch({
+        type: 'REMOVE_DUCK',
+        name: 'Actual Advice Mallard',
+      });
+      expect(duckStore.getState()).to.deep.equal(initialDucks);
     });
   });
 
-  describe('enhancer', () => {
 
+  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+                              - EXTRA CREDIT -
+      If you've reached this point without issue, you should have a fairly
+      good understanding of how the essential pieces of redux interact and
+      function. Everything beyond here is extra credit! If you implement
+      the next sections correctly, you could even use third-party libraries
+      like redux-thunk or redux-logger with reducks. How cool!
+
+  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+  describe('enhancer', () => {
+    // An enhancer is a function that takes in the createStore function and
+    // returns an 'enhanced' version of the createStore function.
+    // It has this signature:
+
+      const exampleEnhancer = createStore => (reducer, preloadedState) => {
+        // store enhancing logic here
+      }
+
+    // In the case a valid enhancer is supplied when createStore is invoked,
+    // we want to return a store that's been created by an enhanced createStore
+    // function, e.g.
+    //   const enhancedCreateStore = enhancer(createStore);
+    //   return enhancedCreateStore(reducer, preloadedState);
+
+    // We will creating an enhancer as we write the applyMiddleware function
+    // in the next section.
+
+
+    it('is accepted as a third argument', () => {
+      expect(createStore.bind(null, duckReducer, [], exampleEnhancer)).to.not.throw();
+    });
+
+    it('is accepted as a second argument is no preloaded state is provided', () => {
+      expect(createStore.bind(null, duckReducer, exampleEnhancer)).to.not.throw();
+    });
+
+    it('must be a function if supplied', () => {
+      expect(createStore.bind(null, duckReducer, [], 'not a func')).to.throw(TypeError);
+    });
   });
 });
