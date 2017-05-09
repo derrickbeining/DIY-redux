@@ -15,7 +15,10 @@
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 function compose(...funcs) {
-  // CODE HERE!
+  if (funcs.length === 0) return (a) => a;
+  if (funcs.length === 1) return funcs[0];
+
+  return funcs.reduce((acc, cur) => (...args) => acc(cur(...args)));
 }
 
 module.exports = compose;
