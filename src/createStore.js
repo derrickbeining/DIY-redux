@@ -37,59 +37,7 @@
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 function createStore(reducer, preloadedState, enhancer) {
-  let state = reducer(preloadedState, {type: 'INIT'});
-  let subscriptions = [];
-
-  if (typeof preloadedState === 'function' && typeof enhancer === undefined) {
-    enhancer = preloadedState;
-    preloadedState = undefined;
-  }
-
-  if (enhancer) {
-    if (typeof enhancer !== 'function') throw new TypeError('Enhancer must be a function');
-    return enhancer(createStore)(reducer, preloadedState);
-  }
-
-  function getState() {
-      return state;
-    }
-
-  function dispatch(action) {
-    if (typeof action !== 'object') throw new TypeError('Action must be a pure object');
-    if (!action.type) throw new Error('Action object must have "type" key');
-
-    const nextState = reducer(state, action);
-    if (state !== nextState) {
-      subscriptions.forEach(subscription => subscription());
-      state = nextState;
-    }
-
-    return action;
-  }
-
-  function replaceReducer(nextReducer) {
-      if (typeof nextReducer !== 'function') throw new TypeError('Reducer must be a function');
-      reducer = nextReducer;
-    }
-
-  function subscribe(listener) {
-    if (typeof listener !== 'function') throw new TypeError('Listener must be a function');
-    subscriptions.push(listener);
-
-    let subscribed = true;
-    return () => {
-      if (!subscribed) return;
-      subscriptions.splice(subscriptions.indexOf(listener), 1);
-      subscribed = false;
-    };
-  }
-
-  return {
-    getState,
-    dispatch,
-    subscribe,
-    replaceReducer,
-  }
+  // CODE HERE!
 }
 
 module.exports = createStore;

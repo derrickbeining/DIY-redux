@@ -186,22 +186,23 @@ describe('createStore', () => {
   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
   describe('enhancer', () => {
-    // An enhancer is a function that takes in the createStore function and
-    // returns an 'enhanced' version of the createStore function.
-    // It has this signature:
 
+    // An enhancer is a function that takes in the createStore function and
+    // returns an 'enhanced' version of createStore.
+    // It has this signature:
+    
       const exampleEnhancer = createStore => (reducer, preloadedState) => {
         // store enhancing logic here
       }
 
-    // In the case a valid enhancer is supplied when createStore is invoked,
-    // we want to return a store that's been created by an enhanced createStore
+    // In the case a valid enhancer was supplied when createStore was invoked,
+    // we must return a store that's been created by an enhanced createStore
     // function, e.g.
     //   const enhancedCreateStore = enhancer(createStore);
     //   return enhancedCreateStore(reducer, preloadedState);
 
-    // We will creating an enhancer as we write the applyMiddleware function
-    // in the next section.
+    // We will create an enhancer as we write the applyMiddleware function
+    // in an upcoming section.
 
 
     it('is accepted as a third argument', () => {
@@ -217,3 +218,5 @@ describe('createStore', () => {
     });
   });
 });
+
+                /* --> continue to compose.spec.js --> */
