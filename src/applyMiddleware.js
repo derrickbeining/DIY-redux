@@ -31,22 +31,7 @@
 const compose = require('./compose');
 
 function applyMiddleware(...middlewares) {
-  return (createStore) => {
-    return (reducer, preloadedState, enhancer) => {
-      const store = createStore(reducer, preloadedState, enhancer);
-
-      const middlewareAPI = {
-        getState: store.getState,
-        dispatch: store.dispatch,
-      };
-
-      const chain = middlewares.map(middleware => middleware(middlewareAPI));
-      const enhancedDispatch = compose(...chain)(store.dispatch);
-      store.dispatch = enhancedDispatch;
-
-      return store;
-    }
-  }
+  // CODE HERE!
 }
 
 module.exports = applyMiddleware;
