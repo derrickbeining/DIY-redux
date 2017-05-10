@@ -13,5 +13,9 @@
     "chai": "^3.5.0",
     "mocha": "^3.3.0",
     "sinon": "^2.2.0"
+  },
+  "dependencies": {
+    "redux-logger": "^3.0.1",
+    "redux-thunk": "^2.2.0"
   }
 }

@@ -1,6 +1,6 @@
 const initialDucks = [
   { name: 'Daffy', trait: 'black' },
-  { name: 'The Ugly Duckling', color: 'yellow' }, // actually a swan...
+  { name: 'Statey', color: 'mystery' }, // curtesy of Nick Drane
 ];
 
 function duckReducer(prevDucks=initialDucks, action) {
