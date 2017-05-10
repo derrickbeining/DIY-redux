@@ -1,5 +1,4 @@
 const expect = require('chai').expect;
-const sinon = require('sinon');
 
 const compose = require('../src/compose');
 
@@ -29,3 +28,5 @@ describe('compose', () => {
     expect(compose(square, 'not a func', add).bind(null, 1, 2, 3)).to.throw(Error);
   });
 });
+
+              /* --> continue to applyMiddleware.spec.js --> */
