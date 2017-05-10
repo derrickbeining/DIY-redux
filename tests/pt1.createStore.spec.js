@@ -12,7 +12,7 @@ describe('createStore', () => {
     duckStore = createStore(duckReducerSpy);
   });
 
-  xit('is a function', () => {
+  it('is a function', () => {
     expect(createStore).to.be.a('function');
   });
 
