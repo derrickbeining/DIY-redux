@@ -40,21 +40,22 @@ describe('createStore', () => {
       expect(duckReducerSpy.called).to.be.true;
 
       const [ state, action ] = duckReducerSpy.lastCall.args;
-      expect(state).to.deep.equal(undefined); // see line 12, no preloadedState is provided
-      expect(action).to.deep.equal({ type: 'INIT' });
+      expect(state).to.be.undefined; // see line 12, no preloadedState is provided
+      expect(action).to.deep.equal({ type: '@@init' });
     });
 
     xit('can only be accessed using the getState method', () => {
       // HINT: closure!
       expect(duckStore.state).to.be.undefined;
-      expect(duckStore.getState()).to.deep.equal(initialDucks);
+      expect(duckStore.getState()).to.equal(initialDucks);
     });
   });
 
   describe('updating state', () => {
+    const rubberDucky = { name: 'The Rubber Duck', color: 'yellow' };
     const addRubberDucky = {
       type: 'ADD_DUCK',
-      duck: { name: 'The Rubber Duck', color: 'yellow' },
+      duck: rubberDucky,
     };
 
     describe('setting up dispatch', () => {
@@ -68,18 +69,27 @@ describe('createStore', () => {
         expect(duckStore.dispatch.bind(null, invalidAction)).to.throw(Error);
       });
 
-      xit('returns the action object', () => {
-        expect(duckStore.dispatch(addRubberDucky)).to.deep.equal(addRubberDucky);
+      xit('expects action type to be a string', () => {
+        const invalidAction1 = { type: () => {} };
+        const invalidAction2 = { type: 123 };
+        const invalidAction3 = { type: {} };
+
+        expect(duckStore.dispatch.bind(null, invalidAction1)).to.throw(TypeError);
+        expect(duckStore.dispatch.bind(null, invalidAction2)).to.throw(TypeError);
+        expect(duckStore.dispatch.bind(null, invalidAction3)).to.throw(TypeError);
       });
 
-      xit('runs the reducer with state and action', () => {
-        const expectedStateCalled = duckStore.getState();
+      xit('returns the action object', () => {
+        expect(duckStore.dispatch(addRubberDucky)).to.equal(addRubberDucky);
+      });
 
+      xit('runs the reducer with state and action to update the state', () => {
         duckStore.dispatch(addRubberDucky);
         
         const [ state, action ]  = duckReducerSpy.lastCall.args;
-        expect(state).to.deep.equal(expectedStateCalled);
-        expect(action).to.deep.equal(addRubberDucky);
+        expect(state).to.equal(initialDucks);
+        expect(action).to.equal(addRubberDucky);
+        expect(duckStore.getState()).to.deep.equal([...initialDucks, rubberDucky]);
       });
     });
 
@@ -150,7 +160,7 @@ describe('createStore', () => {
     });
 
     xit('does not reset state when reducer is replaced', () => {
-      expect(duckStore.getState()).to.deep.equal(initialDucks);
+      expect(duckStore.getState()).to.equal(initialDucks);
 
       const actualAdviceMallard = {
         name: 'Actual Advice Mallard',
@@ -204,13 +214,19 @@ describe('createStore', () => {
     // We will create an enhancer as we write the applyMiddleware function
     // in an upcoming section.
 
-
+    const enhancerSpy = sinon.spy(exampleEnhancer);
+    afterEach(() => {
+      enhancerSpy.reset();
+    });
+    
     xit('is accepted as a third argument', () => {
-      expect(createStore.bind(null, duckReducer, [], exampleEnhancer)).to.not.throw();
+      expect(createStore.bind(null, duckReducer, [], enhancerSpy)).to.not.throw();
+      expect(enhancerSpy.called).to.be.true;
     });
 
     xit('is accepted as a second argument is no preloaded state is provided', () => {
-      expect(createStore.bind(null, duckReducer, exampleEnhancer)).to.not.throw();
+      expect(createStore.bind(null, duckReducer, enhancerSpy)).to.not.throw();
+      expect(enhancerSpy.called).to.be.true;
     });
 
     xit('must be a function if supplied', () => {

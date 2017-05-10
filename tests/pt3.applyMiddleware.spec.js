@@ -68,34 +68,30 @@ describe('applyMiddleware', () => {
     fell swoop, so let's first compose a single dispatch-modifier that only
     needs to be invoked once, and gives us the nice updated dispatch we wanted!
     Good thing we wrote that compose function!
-
     I'll let you try to connect the final dots, but essentially you must
     successfully modify the dispatch method, and make sure the store you 
     return has this updated dispatch.
-
                                   ------
-
     Here is the final test! Will your applyMiddleware function work with 
     third-party middlewares like redux thunk?! Ahhhh, this is so exciting! */
 
   xit('works with thunk middleware', () => {
-    const enhancedCreateStore = applyMiddleware(thunk)(createStore);
-    const enhancedStore = enhancedCreateStore(duckReducer);
+    const storeWithMiddleware = createStore(duckReducer, applyMiddleware(thunk));
 
-    expect(enhancedStore.getState()).to.deep.equal(initialDucks);
+    expect(storeWithMiddleware.getState()).to.equal(initialDucks);
 
     const theUglyDuckling = {
       name: 'The Ugly Duckling',
       color: 'yellow'
     }; // actually a swan...
     
-    enhancedStore.dispatch({
+    storeWithMiddleware.dispatch({
       type: 'ADD_DUCK',
       duck: theUglyDuckling,
     });
 
     let expectedDucks = [...initialDucks, theUglyDuckling];
-    expect(enhancedStore.getState()).to.deep.equal([...initialDucks, theUglyDuckling]);
+    expect(storeWithMiddleware.getState()).to.deep.equal([...initialDucks, theUglyDuckling]);
 
     const duck1 = { name: 'duck1', color: 'yellow' };
     const duck2 = { name: 'duck2', color: 'white' };
@@ -107,9 +103,9 @@ describe('applyMiddleware', () => {
       dispatch({ type: 'ADD_DUCK', duck: duck3 });
     };
 
-    enhancedStore.dispatch(addManyDucks);
+    storeWithMiddleware.dispatch(addManyDucks);
 
     expectedDucks = [...expectedDucks, duck1, duck2, duck3];
-    expect(enhancedStore.getState()).to.deep.equal(expectedDucks);
+    expect(storeWithMiddleware.getState()).to.deep.equal(expectedDucks);
   });
 });
