@@ -10,25 +10,25 @@ const createStore = require('../src/createStore');
 const { initialDucks, duckReducer } = require('./utils');
 
 describe('applyMiddleware', () => {
-  it('returns a function (an enhancer)', () => {
+  xit('returns a function (an enhancer)', () => {
     expect(applyMiddleware(thunk)).to.be.a('function');
   });
 
-  it('enhancer is defined with one parameter (createStore)', () => {
+  xit('enhancer is defined with one parameter (createStore)', () => {
     expect(applyMiddleware(thunk)).to.have.lengthOf(1);
   });
 
-  it('enhancer returns another function (the enhanced createStore)', () => {
+  xit('enhancer returns another function (the enhanced createStore)', () => {
     const enhancedCreateStore = applyMiddleware(thunk)(createStore);
     expect(enhancedCreateStore).to.be.a('function');
   });
 
-  it('enhanced createStore has the same function signature as createStore', () => {
+  xit('enhanced createStore has the same function signature as createStore', () => {
     const enhancedCreateStore = applyMiddleware(thunk)(createStore);
     expect(enhancedCreateStore).to.have.lengthOf(3); // reducer, preloadedState, and enhancer
   });
 
-  it('enhanced createStore creates a store using the original createStore and returns it', () => {
+  xit('enhanced createStore creates a store using the original createStore and returns it', () => {
     const createStoreSpy = sinon.spy(createStore);
     const enhancedCreateStore = applyMiddleware(thunk)(createStoreSpy);
     const enhancedStore = enhancedCreateStore(duckReducer);
@@ -45,7 +45,7 @@ describe('applyMiddleware', () => {
     to somehow modify the dispatch method using the middlewares and make
     sure the enhanced store we return has a cool new dispatcher. */
 
-  it('passes an object with getState and dispatch to all middleware passed in', () => {
+  xit('passes an object with getState and dispatch to all middleware passed in', () => {
     const thunkSpy = sinon.spy(thunk);
     const loggerSpy = sinon.spy(logger);
     const enhancedCreateStore = applyMiddleware(thunkSpy, loggerSpy)(createStore);
@@ -78,7 +78,7 @@ describe('applyMiddleware', () => {
     Here is the final test! Will your applyMiddleware function work with 
     third-party middlewares like redux thunk?! Ahhhh, this is so exciting! */
 
-  it('works with thunk middleware', () => {
+  xit('works with thunk middleware', () => {
     const enhancedCreateStore = applyMiddleware(thunk)(createStore);
     const enhancedStore = enhancedCreateStore(duckReducer);
 
