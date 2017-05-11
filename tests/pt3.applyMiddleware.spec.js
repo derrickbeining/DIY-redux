@@ -40,10 +40,14 @@ describe('applyMiddleware', () => {
     expect(Object.keys(enhancedStore)).to.have.lengthOf(4);
   });
 
-  /* At this point, we have pretty good scaffolding for applyMiddleware, 
-    but we're not doing anything with the middleware passed in! We need
+  /*
+  
+    At this point, we have pretty good scaffolding for applyMiddleware, 
+    but we're not doing anything with the middlewares passed in! We need
     to somehow modify the dispatch method using the middlewares and make
-    sure the enhanced store we return has a cool new dispatcher. */
+    sure the enhanced store we return has a cool new dispatcher.
+    
+  */
 
   xit('passes an object with getState and dispatch to all middleware passed in', () => {
     const thunkSpy = sinon.spy(thunk);
@@ -62,18 +66,25 @@ describe('applyMiddleware', () => {
     expect(loggerArgs.dispatch).to.be.a('function');
   });
 
-  /* By passing the last spec, you should have created a chain of functions
-    that are ready to receive the dispatch method and modify it (let's call
-    them "dispatch-modifiers"). However, we want to modify dispatch in one
+  /*
+
+    By passing the last spec, you've created a chain of functions that are
+    ready to receive the dispatch method and modify it (let's call them
+    "dispatch-modifiers"). However, we want to modify dispatch in one
     fell swoop, so let's first compose a single dispatch-modifier that only
-    needs to be invoked once, and gives us the nice updated dispatch we wanted!
+    needs to be invoked once, and returns the nice updated dispatch we wanted!
     Good thing we wrote that compose function!
+
     I'll let you try to connect the final dots, but essentially you must
-    successfully modify the dispatch method, and make sure the store you 
-    return has this updated dispatch.
+    successfully modify the dispatch method and return a store with the
+    modified dispatch.
+
                                   ------
+
     Here is the final test! Will your applyMiddleware function work with 
-    third-party middlewares like redux thunk?! Ahhhh, this is so exciting! */
+    third-party middlewares like redux thunk?! Ahhhh, this is so exciting!
+
+  */
 
   xit('works with thunk middleware', () => {
     const storeWithMiddleware = createStore(duckReducer, applyMiddleware(thunk));

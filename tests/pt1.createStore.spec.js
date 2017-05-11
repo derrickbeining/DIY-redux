@@ -83,12 +83,18 @@ describe('createStore', () => {
         expect(duckStore.dispatch(addRubberDucky)).to.equal(addRubberDucky);
       });
 
-      xit('runs the reducer with state and action to update the state', () => {
+      xit('runs the reducer with state and action', () => {
         duckStore.dispatch(addRubberDucky);
         
         const [ state, action ]  = duckReducerSpy.lastCall.args;
         expect(state).to.equal(initialDucks);
         expect(action).to.equal(addRubberDucky);
+        expect(duckStore.getState()).to.deep.equal([...initialDucks, rubberDucky]);
+      });
+
+      xit('updates the state if running reducer returned a new object', () => {
+        expect(duckStore.getState()).to.equal(initialDucks);
+        duckStore.dispatch(addRubberDucky);
         expect(duckStore.getState()).to.deep.equal([...initialDucks, rubberDucky]);
       });
     });
@@ -104,7 +110,7 @@ describe('createStore', () => {
     });
 
     describe('integrating dispatch and subscribe', () => {
-      xit('calling dispatch invokes all subscribed listeners', () => {
+      xit('updating state causes all subscribed listeners to fire', () => {
         const listenerA = sinon.spy();
         const listenerB = sinon.spy();
 
@@ -187,32 +193,29 @@ describe('createStore', () => {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
                               - EXTRA CREDIT -
+  
       If you've reached this point without issue, you should have a fairly
-      good understanding of how the essential pieces of redux interact and
-      function. Everything beyond here is extra credit! If you implement
-      the next sections correctly, you could even use third-party libraries
-      like redux-thunk or redux-logger with reducks. How cool!
+      good understanding the redux essentials. The remainder is extra credit!
+      If you implement the next sections correctly, you could use third-party
+      libraries like redux-thunk or redux-logger with reducks. How cool! 🦆
 
   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
   describe('enhancer', () => {
 
-    // An enhancer is a function that takes in the createStore function and
-    // returns an 'enhanced' version of createStore.
-    // It has this signature:
-    
+    // An enhancer is a function that takes createStore and returns an 'enhanced'
+    // version of createStore. It has this signature:
       const exampleEnhancer = createStore => (reducer, preloadedState) => {
         // store enhancing logic here
       }
 
-    // In the case a valid enhancer was supplied when createStore was invoked,
-    // we must return a store that's been created by an enhanced createStore
-    // function, e.g.
+    // If a valid enhancer was supplied to createStore, we must return a store
+    // that's been enhanced, e.g.
     //   const enhancedCreateStore = enhancer(createStore);
     //   return enhancedCreateStore(reducer, preloadedState);
 
-    // We will create an enhancer as we write the applyMiddleware function
-    // in an upcoming section.
+    // The applyMiddleware function we'll be writing in an upcoming section is
+    // an example of an enhancer.
 
     const enhancerSpy = sinon.spy(exampleEnhancer);
     afterEach(() => {
@@ -224,7 +227,7 @@ describe('createStore', () => {
       expect(enhancerSpy.called).to.be.true;
     });
 
-    xit('is accepted as a second argument is no preloaded state is provided', () => {
+    xit('is accepted as a second argument if no preloaded state is provided', () => {
       expect(createStore.bind(null, duckReducer, enhancerSpy)).to.not.throw();
       expect(enhancerSpy.called).to.be.true;
     });

@@ -1,19 +1,19 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-                          - MIDDLEWARE -
+                            - MIDDLEWARE -
 
-  applyMiddleware returns a store enhancer that applies middlewares
-  to the store's dispatch method. As a refresher, an enhancer is a
-  function that takes the createStore method and modifies it. The
+  applyMiddleware returns a store enhancer which modifies the dispatch
+  method with 'middlewares'. As a refresher, an enhancer is a
+  function that takes the createStore function and modifies it. The
   modified createStore should take the same function signature as the
   original, and similarly return a store object with the appropriate
   APIs (getState, dispatch, subscribe, and replaceReducer).
   
-  applyMiddleware takes in many middlewares, so we will need to use 
-  the compose function to combine all the middlewares and apply it
-  to the dispatch all at once.
+  applyMiddleware takes many middlewares, so we will need to use the
+  compose function to combine all the middlewares and apply them to
+  dispatch all at once.
 
-  For an example of redux middleware, take a look at redux-thunk:
+  For an example of a redux middleware, check out redux-thunk:
     https://github.com/gaearon/redux-thunk/blob/master/src/index.js
 
   Middleware takes in an object with references to a store's dispatch
@@ -21,9 +21,9 @@
   receives dispatch, and returns a modified dispatch (much like the
   enhancer takes in createStore and returns an enhanced createStore).
 
-  With three levels of functions being returned, I don't blame you if
-  you're super confused by this 3-level-deep higher order function...
-  Take some time to study the thunk middleware source code until you
+  With all the arrows in those functions, I don't blame you if you're
+  a bit confused by this 3-level-deep higher order function... Take
+  some time to study the redux-thunk middleware source code until you
   feel comfortable enough to move on.
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
