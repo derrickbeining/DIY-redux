@@ -170,32 +170,42 @@ describe('createStore', () => {
   });
 
   describe('replaceReducer', () => {
+    const actualAdviceMallard = {
+      name: 'Actual Advice Mallard',
+      color: 'multi',
+    };
+
+    const addMallard = () => ({
+      type: 'ADD_DUCK',
+      duck: actualAdviceMallard,
+    });
+
+    const removeMallard = () => ({
+      type: 'REMOVE_DUCK',
+      name: 'Actual Advice Mallard',
+    });
 
     xit('expects a function (the next reducer)', () => {
       expect(duckStore.replaceReducer.bind(null, 'not a func')).to.throw(TypeError);
     });
 
-    xit('does not reset state when reducer is replaced', () => {
-      expect(duckStore.getState()).to.equal(initialDucks);
-
-      const actualAdviceMallard = {
-        name: 'Actual Advice Mallard',
-        color: 'multi'
-      };
-      duckStore.dispatch({
-        type: 'ADD_DUCK',
-        duck: actualAdviceMallard
-      });
+    xit('replaces reducer', () => {
+      duckStore.dispatch(addMallard());
       expect(duckStore.getState()).to.deep.equal([...initialDucks, actualAdviceMallard]);
-      
+
+      duckStore.replaceReducer(newDuckReducer);
+
+      // only newDuckReducer has duck removing logic
+      duckStore.dispatch(removeMallard());
+      expect(duckStore.getState()).to.deep.equal(initialDucks);
+    });
+
+    xit('does not reset state when reducer is replaced', () => {
+      duckStore.dispatch(addMallard());
+      expect(duckStore.getState()).to.deep.equal([...initialDucks, actualAdviceMallard]);
+
       duckStore.replaceReducer(newDuckReducer);
       expect(duckStore.getState()).to.deep.equal([...initialDucks, actualAdviceMallard]);
-      
-      duckStore.dispatch({
-        type: 'REMOVE_DUCK',
-        name: 'Actual Advice Mallard',
-      });
-      expect(duckStore.getState()).to.deep.equal(initialDucks);
     });
   });
 
@@ -203,7 +213,7 @@ describe('createStore', () => {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
                               - EXTRA CREDIT -
-  
+
       If you've reached this point without issue, you should have a fairly
       good understanding the redux essentials. The remainder is extra credit!
       If you implement the next sections correctly, you could use third-party
@@ -231,7 +241,7 @@ describe('createStore', () => {
     afterEach(() => {
       enhancerSpy.reset();
     });
-    
+
     xit('is accepted as a third argument', () => {
       expect(createStore.bind(null, duckReducer, [], enhancerSpy)).to.not.throw();
       expect(enhancerSpy.called).to.be.true;
