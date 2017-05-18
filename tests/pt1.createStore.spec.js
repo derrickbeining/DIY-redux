@@ -64,19 +64,24 @@ describe('createStore', () => {
         expect(duckStore.dispatch.bind(null, invalidAction)).to.throw(TypeError);
       });
 
-      xit('expects action object to have a "type" property', () => {
-        const invalidAction = { notType: 'BAD!' };
-        expect(duckStore.dispatch.bind(null, invalidAction)).to.throw(Error);
+      xit('action object "type" property cannot be undefined', () => {
+        const noTypeAction = { notType: 'BAD!' };
+        const undefTypeAction = { type: undefined };
+
+        expect(duckStore.dispatch.bind(null, noTypeAction)).to.throw(Error);
+        expect(duckStore.dispatch.bind(null, undefTypeAction)).to.throw(Error);
       });
 
-      xit('expects action type to be a string', () => {
-        const invalidAction1 = { type: () => {} };
-        const invalidAction2 = { type: 123 };
-        const invalidAction3 = { type: {} };
+      xit('action object "type" property can by falsy', () => {
+        const nullTypeAction = { type: null };
+        const falseTypeAction = { type: false };
+        const emptyStrTypeAction = { type: '' };
+        const NaNTypeAction = { type: NaN };
 
-        expect(duckStore.dispatch.bind(null, invalidAction1)).to.throw(TypeError);
-        expect(duckStore.dispatch.bind(null, invalidAction2)).to.throw(TypeError);
-        expect(duckStore.dispatch.bind(null, invalidAction3)).to.throw(TypeError);
+        expect(duckStore.dispatch.bind(null, nullTypeAction)).to.throw(Error);
+        expect(duckStore.dispatch.bind(null, falseTypeAction)).to.throw(Error);
+        expect(duckStore.dispatch.bind(null, emptyStrTypeAction)).to.throw(Error);
+        expect(duckStore.dispatch.bind(null, NaNTypeAction)).to.throw(Error);
       });
 
       xit('returns the action object', () => {
