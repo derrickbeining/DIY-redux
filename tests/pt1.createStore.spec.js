@@ -94,13 +94,18 @@ describe('createStore', () => {
         const [ state, action ]  = duckReducerSpy.lastCall.args;
         expect(state).to.equal(initialDucks);
         expect(action).to.equal(addRubberDucky);
-        expect(duckStore.getState()).to.deep.equal([...initialDucks, rubberDucky]);
       });
 
       xit('updates the state if running reducer returned a new object', () => {
         expect(duckStore.getState()).to.equal(initialDucks);
         duckStore.dispatch(addRubberDucky);
         expect(duckStore.getState()).to.deep.equal([...initialDucks, rubberDucky]);
+      });
+
+      xit('does not update the state if reducer returned previous state', () => {
+        const unknownAction = { type: 'UNKNOWN' };
+        duckStore.dispatch(unknownAction);
+        expect(duckStore.getState()).to.equal(initialDucks);
       });
     });
 
