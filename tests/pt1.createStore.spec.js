@@ -72,16 +72,16 @@ describe('createStore', () => {
         expect(duckStore.dispatch.bind(null, undefTypeAction)).to.throw(Error);
       });
 
-      xit('action object "type" property can by falsy', () => {
+      xit('action object "type" property can be falsy', () => {
         const nullTypeAction = { type: null };
         const falseTypeAction = { type: false };
         const emptyStrTypeAction = { type: '' };
         const NaNTypeAction = { type: NaN };
 
-        expect(duckStore.dispatch.bind(null, nullTypeAction)).to.throw(Error);
-        expect(duckStore.dispatch.bind(null, falseTypeAction)).to.throw(Error);
-        expect(duckStore.dispatch.bind(null, emptyStrTypeAction)).to.throw(Error);
-        expect(duckStore.dispatch.bind(null, NaNTypeAction)).to.throw(Error);
+        expect(duckStore.dispatch.bind(null, nullTypeAction)).to.not.throw(Error);
+        expect(duckStore.dispatch.bind(null, falseTypeAction)).to.not.throw(Error);
+        expect(duckStore.dispatch.bind(null, emptyStrTypeAction)).to.not.throw(Error);
+        expect(duckStore.dispatch.bind(null, NaNTypeAction)).to.not.throw(Error);
       });
 
       xit('returns the action object', () => {
