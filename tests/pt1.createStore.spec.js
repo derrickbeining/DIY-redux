@@ -16,16 +16,16 @@ describe('createStore', () => {
     expect(createStore).to.be.a('function');
   });
 
-  xit('expects the first argument (the reducer) to be a function', () => {
+  it('expects the first argument (the reducer) to be a function', () => {
     expect(createStore.bind(null, 'not a func')).to.throw(TypeError);
   });
 
   describe('return value (the Store)', () => {
-    xit('is an object', () => {
+    it('is an object', () => {
       expect(duckStore).to.be.an('object');
     });
 
-    xit('should *only* have getState, dispatch, subscribe, and replaceReducer properties', () => {
+    it('should *only* have getState, dispatch, subscribe, and replaceReducer properties', () => {
       const duckStoreMethods = Object.keys(duckStore);
       expect(duckStoreMethods).has.lengthOf(4);
       expect(duckStore.getState).to.be.a('function');
@@ -36,7 +36,7 @@ describe('createStore', () => {
   });
 
   describe('state', () => {
-    xit('is defined by running the reducer with preloadedState and an init action', () => {
+    it('is defined by running the reducer with preloadedState and an init action', () => {
       expect(duckReducerSpy.called).to.be.true;
 
       const [ state, action ] = duckReducerSpy.lastCall.args;
@@ -44,7 +44,7 @@ describe('createStore', () => {
       expect(action).to.deep.equal({ type: '@@init' });
     });
 
-    xit('can only be accessed using the getState method', () => {
+    it('can only be accessed using the getState method', () => {
       // HINT: closure!
       expect(duckStore.state).to.be.undefined;
       expect(duckStore.getState()).to.equal(initialDucks);
@@ -59,12 +59,12 @@ describe('createStore', () => {
     };
 
     describe('setting up dispatch', () => {
-      xit('expects a plain action object', () => {
+      it('expects a plain action object', () => {
         const invalidAction = 'not an object';
         expect(duckStore.dispatch.bind(null, invalidAction)).to.throw(TypeError);
       });
 
-      xit('action object "type" property cannot be undefined', () => {
+      it('action object "type" property cannot be undefined', () => {
         const noTypeAction = { notType: 'BAD!' };
         const undefTypeAction = { type: undefined };
 
@@ -72,7 +72,7 @@ describe('createStore', () => {
         expect(duckStore.dispatch.bind(null, undefTypeAction)).to.throw(Error);
       });
 
-      xit('action object "type" property can be falsy', () => {
+      it('action object "type" property can be falsy', () => {
         const nullTypeAction = { type: null };
         const falseTypeAction = { type: false };
         const emptyStrTypeAction = { type: '' };
@@ -84,25 +84,25 @@ describe('createStore', () => {
         expect(duckStore.dispatch.bind(null, NaNTypeAction)).to.not.throw(Error);
       });
 
-      xit('returns the action object', () => {
+      it('returns the action object', () => {
         expect(duckStore.dispatch(addRubberDucky)).to.equal(addRubberDucky);
       });
 
-      xit('runs the reducer with state and action', () => {
+      it('runs the reducer with state and action', () => {
         duckStore.dispatch(addRubberDucky);
-        
+
         const [ state, action ]  = duckReducerSpy.lastCall.args;
         expect(state).to.equal(initialDucks);
         expect(action).to.equal(addRubberDucky);
       });
 
-      xit('updates the state if running reducer returned a new object', () => {
+      it('updates the state if running reducer returned a new object', () => {
         expect(duckStore.getState()).to.equal(initialDucks);
         duckStore.dispatch(addRubberDucky);
         expect(duckStore.getState()).to.deep.equal([...initialDucks, rubberDucky]);
       });
 
-      xit('does not update the state if reducer returned previous state', () => {
+      it('does not update the state if reducer returned previous state', () => {
         const unknownAction = { type: 'UNKNOWN' };
         duckStore.dispatch(unknownAction);
         expect(duckStore.getState()).to.equal(initialDucks);
@@ -110,17 +110,17 @@ describe('createStore', () => {
     });
 
     describe('setting up subscribe', () => {
-      xit('expects a function (a subscription/listener)', () => {
+      it('expects a function (a subscription/listener)', () => {
         expect(duckStore.subscribe.bind(null, 'not a func')).to.throw(TypeError);
       });
 
-      xit('returns a function (unsubscribes a listener when invoked)', () => {
+      it('returns a function (unsubscribes a listener when invoked)', () => {
         expect(duckStore.subscribe(()=>{})).to.be.a('function');
       });
     });
 
     describe('integrating dispatch and subscribe', () => {
-      xit('updating state causes all subscribed listeners to fire', () => {
+      it('updating state causes all subscribed listeners to fire', () => {
         const listenerA = sinon.spy();
         const listenerB = sinon.spy();
 
@@ -136,12 +136,12 @@ describe('createStore', () => {
         expect(listenerB.called).to.be.true;
       });
 
-      xit('unsubscribe removes only the correct listener', () => {
+      it('unsubscribe removes only the correct listener', () => {
         const listenerA = sinon.spy();
-        const listenerB = sinon.spy();        
+        const listenerB = sinon.spy();
 
         const unsubscribeA = duckStore.subscribe(listenerA);
-        const unsubscribeB1 = duckStore.subscribe(listenerB);        
+        const unsubscribeB1 = duckStore.subscribe(listenerB);
         const unsubscribeB2 = duckStore.subscribe(listenerB); // subscribing B twice!
 
         unsubscribeA();
@@ -153,12 +153,12 @@ describe('createStore', () => {
         expect(listenerB.calledOnce).to.be.true; // one B subscription is removed, other one untouched
       });
 
-      xit('unsubcribe will not remove more listeners if called multiple times', () => {
+      it('unsubcribe will not remove more listeners if called multiple times', () => {
         // HINT: closure!!!
         const listenerA = sinon.spy();
 
         const unsubscribeA1 = duckStore.subscribe(listenerA);
-        const unsubscribeA2 = duckStore.subscribe(listenerA);        
+        const unsubscribeA2 = duckStore.subscribe(listenerA);
 
         unsubscribeA2();
         unsubscribeA2();
@@ -185,11 +185,11 @@ describe('createStore', () => {
       name: 'Actual Advice Mallard',
     });
 
-    xit('expects a function (the next reducer)', () => {
+    it('expects a function (the next reducer)', () => {
       expect(duckStore.replaceReducer.bind(null, 'not a func')).to.throw(TypeError);
     });
 
-    xit('replaces reducer', () => {
+    it('replaces reducer', () => {
       duckStore.dispatch(addMallard());
       expect(duckStore.getState()).to.deep.equal([...initialDucks, actualAdviceMallard]);
 
@@ -200,7 +200,7 @@ describe('createStore', () => {
       expect(duckStore.getState()).to.deep.equal(initialDucks);
     });
 
-    xit('does not reset state when reducer is replaced', () => {
+    it('does not reset state when reducer is replaced', () => {
       duckStore.dispatch(addMallard());
       expect(duckStore.getState()).to.deep.equal([...initialDucks, actualAdviceMallard]);
 
@@ -242,17 +242,17 @@ describe('createStore', () => {
       enhancerSpy.reset();
     });
 
-    xit('is accepted as a third argument', () => {
+    it('is accepted as a third argument', () => {
       expect(createStore.bind(null, duckReducer, [], enhancerSpy)).to.not.throw();
       expect(enhancerSpy.called).to.be.true;
     });
 
-    xit('is accepted as a second argument if no preloaded state is provided', () => {
+    it('is accepted as a second argument if no preloaded state is provided', () => {
       expect(createStore.bind(null, duckReducer, enhancerSpy)).to.not.throw();
       expect(enhancerSpy.called).to.be.true;
     });
 
-    xit('must be a function if supplied', () => {
+    it('must be a function if supplied', () => {
       expect(createStore.bind(null, duckReducer, [], 'not a func')).to.throw(TypeError);
     });
   });

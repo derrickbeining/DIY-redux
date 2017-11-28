@@ -14,8 +14,11 @@
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-function compose(...funcs) {
-  // CODE HERE!
+function compose(...fns) {
+  if (fns.length === 1) return fns[0];
+  return fns.length > 0
+    ? fns.reduceRight((latter, prior) => (...args) => prior(latter(...args)))
+    : arg => arg;
 }
 
 module.exports = compose;

@@ -8,7 +8,7 @@
   modified createStore should take the same function signature as the
   original, and similarly return a store object with the appropriate
   APIs (getState, dispatch, subscribe, and replaceReducer).
-  
+
   applyMiddleware takes many middlewares, so we will need to use the
   compose function to combine all the middlewares and apply them to
   dispatch all at once.
@@ -31,7 +31,29 @@
 const compose = require('./compose');
 
 function applyMiddleware(...middlewares) {
-  // CODE HERE!
+
+  return function enhance(createStore) {
+
+    return function createStoreEnhanced(reducer, initialState, enhancer) {
+      const store =  createStore(reducer, initialState, enhancer);
+      let dispatch = () => {
+        throw new Error(
+          `Dispatching while constructing your middleware is not allowed. ` +
+          `Other middleware would not be applied to this dispatch.`
+        )
+      }
+      const middlewareAPI = {
+        getState: store.getState,
+        dispatch: (...args) => dispatch(...args)
+      }
+      const chain = middlewares.map(middleware => middleware(middlewareAPI));
+      dispatch = compose(...chain)(store.dispatch)
+      return {
+        ...store,
+        dispatch
+      };
+    };
+  };
 }
 
 module.exports = applyMiddleware;

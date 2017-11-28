@@ -25,7 +25,7 @@
     const sampleReducer = function(prevState=initialState, action) {
       // does things based on action, returns next state
     };
-    
+
   The store can register 'subscriptions' via the 'subscribe' method.
   The subscribe method in functions that must be run when the state
   is updated. 'subscribe' returns a function (unsubscribe), which allows
@@ -36,8 +36,53 @@
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+function isPlainObject(val) {
+  return  typeof val === 'object'
+          && !Array.isArray(val)
+          && val !== null
+}
+
 function createStore(reducer, preloadedState, enhancer) {
-  // CODE HERE!
+  if (typeof reducer !== 'function') throw new TypeError(`${reducer} is not a function`);
+  if (typeof enhancer === 'function') {
+    return enhancer(createStore)(reducer, preloadedState);
+  } else if (enhancer !== undefined) {
+    throw new TypeError(`${enhancer} is not a function`);
+  } else if (typeof preloadedState === 'function') {
+    return preloadedState(createStore)(reducer);
+  }
+  let rootReducer = reducer;
+  let state = rootReducer(preloadedState, {type: '@@init'});
+  let subscribers = [];
+  function updateState(nextState) {
+    state = nextState;
+    subscribers.forEach(fn => fn());
+  }
+
+  return {
+    getState: function() {
+      return state;
+    },
+    dispatch: function(action) {
+      if (!isPlainObject(action)) throw new TypeError('plain objects only please');
+      if (action.type === undefined) throw Error('action type cannot be undefined');
+      const nextState = rootReducer(state, action);
+      if (nextState !== state) updateState(nextState);
+      return action;
+    },
+    subscribe: function(fn) {
+      if (typeof fn !== 'function') throw new TypeError('subscribe takes a function');
+      const uniqueFn = fn.bind(null)
+      subscribers.push(uniqueFn);
+      return function unsubscribe() {
+        subscribers = subscribers.filter(theFn => !Object.is(theFn, uniqueFn));
+      }
+    },
+    replaceReducer: function(newReducer) {
+      if (typeof newReducer !== 'function') throw new TypeError('must take a function');
+      rootReducer = newReducer;
+    }
+  };
 }
 
 module.exports = createStore;
